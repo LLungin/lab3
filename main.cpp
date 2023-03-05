@@ -99,7 +99,6 @@ public:
         return adjacencyList.empty();
     }
 
-
     //Метод size() возвращает количество узлов в графе.
     size_t size() const
     {
@@ -117,6 +116,7 @@ public:
         adjacencyList.swap(other.vertices);
     }
 
+    // Итераторы
     auto begin()
     {
         return adjacencyList.begin();
@@ -137,6 +137,7 @@ public:
         return adjacencyList.cend();
     }
 
+    // Количество входящих рёбер
     size_t degree_in(Node key)
     {
         size_t count = 0;
@@ -151,6 +152,7 @@ public:
         return count;
     }
 
+    // Количество выходящих рёбер
     size_t degree_out(Node key)
     {
         size_t count = 0;
@@ -162,6 +164,7 @@ public:
         return count;
     }
 
+    // Проверка на наличие петли
     bool loop(Node key)
     {
         for(auto &vec : adjacencyList[key])
@@ -172,9 +175,9 @@ public:
         return false;
     }
 
+    // Добавляем новую вершину
     void insert_node(pair<Node, Weight> vertice)
     {
-        // добавляем новую вершину с пустым списком смежных вершин
         adjacencyList.second.insert(vertice);
         auto pos = adjacencyList.second.at(vertice);
         bool yes_or_no;
@@ -185,11 +188,13 @@ public:
         return pos, yes_or_no;
     }
 
+    // Добавляем новую вершину, если такая есть ничего не меняем
     auto insert_or_assign_node(pair<Node, Weight> vertice)
     {
         int flag = 0;
         bool yes_or_no;
 
+        // Смотрим есть ли такая
         for(auto it = adjacencyList.begin(); it != adjacencyList.end(); ++it)
         {
             for(auto &vec : it->second)
@@ -202,12 +207,12 @@ public:
                         auto pos = adjacencyList.second.at(pair);
                         yes_or_no = true;
                         return pos, yes_or_no;
-                        break;
                     }
                 }
             }
         }
 
+        // Если нет
         if (flag == 0)
         {
             adjacencyList.second.insert(vertice);
@@ -222,10 +227,11 @@ public:
         return adjacencyList.second.end(), false;
     }
 
+    // Добавляем новое ребро
     auto insert_edge(Node from, Node to, Weight weight)
     {
-        adjacencyList[from].push_back(make_pair(to, weight));
         bool yes_or_no;
+        adjacencyList[from].push_back(make_pair(to, weight));
         auto pos = adjacencyList.second.at(make_pair(from, weight));
         if (pos == NULL)
             yes_or_no = false;
@@ -233,12 +239,13 @@ public:
             yes_or_no = true;
         return pos, yes_or_no;
     }
-
+    // Добавляем новое ребро, если такое есть присваиваем новый вес
     auto insert_or_assign_edge(Node from, Node to, Weight weight)
     {
         int flag = 0;
         bool yes_or_no;
 
+        // Смотрим есть ли такое
         for(auto it = adjacencyList.begin(); it != adjacencyList.end(); ++it)
         {
             for (auto &vec: it->second)
@@ -253,12 +260,12 @@ public:
                         insert_edge(from, to, weight);
                         yes_or_no = true;
                         return pos, yes_or_no;
-                        break;
                     }
                 }
             }
         }
 
+        // Если нет
         if (flag == 0)
         {
             adjacencyList[from].push_back(make_pair(to, weight));
@@ -273,12 +280,14 @@ public:
         return adjacencyList.second.end(), false;
     }
 
+    // Удаляем все рёбра
     void clear_edges()
     {
         for (int i = 0; i < adjacencyList.second.size(); i++)
             adjacencyList[i].clear();
     }
 
+    // Удаляем все рёбра, выходящие из вершины
     bool clear_edges_go_from(Node key)
     {
         bool yes_or_no;
@@ -298,6 +307,8 @@ public:
             }
         }
 
+        // Проверка удаления
+
         if (adjacencyList[key].second == 0)
         {
             yes_or_no = true;
@@ -310,6 +321,7 @@ public:
         return yes_or_no;
     }
 
+    // Удаляем все рёбра, входящие в вершину
     bool clear_edges_go_to(Node key)
     {
         bool yes_or_no;
@@ -326,6 +338,7 @@ public:
             }
         }
 
+        // Проверка удаления
         if (adjacencyList[key].second == 0)
         {
             yes_or_no = true;
@@ -338,6 +351,7 @@ public:
         return yes_or_no;
     }
 
+    // Удаление вершины
     bool erase_node(Node key)
     {
         // Удаление всех ребер, идущих из вершины
@@ -356,6 +370,7 @@ public:
         // Удаляем вершину из списка смежности
         adjacencyList.erase(key);
 
+        // Проверка удаления
         bool yes_or_no;
         if (adjacencyList[key] == NULL)
             yes_or_no = true;
@@ -364,6 +379,7 @@ public:
         return yes_or_no;
     }
 
+    // Считывание файла
     bool load_from_file(string path)
     {
         ifstream inFile;
@@ -386,6 +402,7 @@ public:
         return true;
     }
 
+    // Запись в файл
     void save_to_file(string path)
     {
         ofstream outFile;
@@ -407,7 +424,7 @@ public:
     }
 
 private:
-    map<Node, vector<pair<Node, Weight>>> adjacencyList; // Мы используем `map` для хранения списков смежности каждой вершины.
+    map<Node, vector<pair<Node, Weight>>> adjacencyList; // Мы используем `map` для хранения списков смежности каждой вершины
 
     int vertices;
     int edges;
